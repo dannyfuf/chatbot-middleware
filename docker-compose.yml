@@ -8,6 +8,10 @@ services:
       - "5000:80"
     volumes:
       - .:/code
+
+  receiver:
+    build: .
+    command: python3 app/events.py
   #   depends_on:
   #     - message_broker
 
