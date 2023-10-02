@@ -11,7 +11,7 @@ services:
 
   receiver:
     build: .
-    command: python3 app/events.py
+    command: python3 app/events/events.py
   #   depends_on:
   #     - message_broker
 
