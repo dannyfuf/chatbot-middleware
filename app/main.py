@@ -1,24 +1,26 @@
 import os
+import logging
 from typing import Union
 from asyncio import create_task
 from dotenv import load_dotenv
 load_dotenv()
-import logging
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from events.events import Emit
 
 # custom modules
 from routers.users import users
 from discord.discord_bot import bot
+from events.events import Emit
 
 app = FastAPI(
     title="Middleware Discord/Telegram",
     version="0.0.1",
     summary="Esta api tiene como fin conectar a un chat bot de Discord/telegram con otros microservicios"
 )
+
+app.include_router(users)
 
 emit_events = Emit()
 
