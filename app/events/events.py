@@ -1,6 +1,7 @@
 import json
 import pika
 import logging
+import time
 
 logging.getLogger("pika").setLevel(logging.ERROR)
 
@@ -24,27 +25,51 @@ class Emit:
 
 
     def connect_render(self):
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq')
-        )
+        while True:
+            try:
+                self.connection = pika.BlockingConnection(
+                    pika.ConnectionParameters(host='Rabbitmq')
+                )
+                logging.info('Conexion a Rabbitmq realizada correctamente')
+
+                break
+            except pika.exceptions.AMQPConnectionError:
+                logging.info('Error al conectarse a Rabbitmq, intentando denuevo en 5 segundos')
+                time.sleep(5)  
 
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange='render',
                                       exchange_type='topic')
         
     def connect_marketplace(self):
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq')
-        )
+        while True:
+            try:
+                self.connection = pika.BlockingConnection(
+                    pika.ConnectionParameters(host='Rabbitmq')
+                )
+                logging.info('Conexion a Rabbitmq realizada correctamente')
+
+                break
+            except pika.exceptions.AMQPConnectionError:
+                logging.info('Error al conectarse a Rabbitmq, intentando denuevo en 5 segundos')
+                time.sleep(5)  
 
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange='marketplace',
                                       exchange_type='topic')
 
     def connect_farm(self):
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq')
-        )
+        while True:
+            try:
+                self.connection = pika.BlockingConnection(
+                    pika.ConnectionParameters(host='Rabbitmq')
+                )
+                logging.info('Conexion a Rabbitmq realizada correctamente')
+
+                break
+            except pika.exceptions.AMQPConnectionError:
+                logging.info('Error al conectarse a Rabbitmq, intentando denuevo en 5 segundos')
+                time.sleep(5)  
 
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange='farm',
@@ -81,11 +106,20 @@ class Emit:
 
 class Receive:
     def __init__(self):
+        time.sleep(10)
         logging.info("Waiting for messages...")
 
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq')
-        )
+        while True:
+            try:
+                self.connection = pika.BlockingConnection(
+                    pika.ConnectionParameters(host='Rabbitmq')
+                )
+                logging.info('Conexion a Rabbitmq realizada correctamente')
+                
+                break
+            except pika.exceptions.AMQPConnectionError:
+                logging.info('Error al conectarse a Rabbitmq, intentando denuevo en 15 segundos')
+                time.sleep(15)  
 
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange='anuncios',
