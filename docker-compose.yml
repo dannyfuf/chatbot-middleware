@@ -11,7 +11,7 @@ services:
   
   receiver:
     build: .
-    command: python3 app/events/events.py
+    command: python3 events/events.py
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
