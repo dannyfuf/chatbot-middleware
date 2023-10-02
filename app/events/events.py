@@ -25,7 +25,7 @@ class Emit:
 
     def connect_render(self):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='Rabbitmq')
+            pika.ConnectionParameters(host='rabbitmq')
         )
 
         self.channel = self.connection.channel()
@@ -34,7 +34,7 @@ class Emit:
         
     def connect_marketplace(self):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='Rabbitmq')
+            pika.ConnectionParameters(host='rabbitmq')
         )
 
         self.channel = self.connection.channel()
@@ -43,7 +43,7 @@ class Emit:
 
     def connect_farm(self):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='Rabbitmq')
+            pika.ConnectionParameters(host='rabbitmq')
         )
 
         self.channel = self.connection.channel()
@@ -84,7 +84,7 @@ class Receive:
         logging.info("Waiting for messages...")
 
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='Rabbitmq')
+            pika.ConnectionParameters(host='rabbitmq')
         )
 
         self.channel = self.connection.channel()

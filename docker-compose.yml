@@ -9,19 +9,12 @@ services:
     volumes:
       - .:/code
 
-  receiver:
-    build: .
-    command: python3 app/events/events.py
-  #   depends_on:
-  #     - message_broker
-
-  # message_broker:
-  #   image: rabbitmq:3-management-alpine
-  #   ports:
-  #       - 5672:5672
-  #       - 15672:15672
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+        - 5672:5672
+        - 15672:15672
 
 networks:
   default:
     name: middleware
-    external: true
