@@ -1,4 +1,5 @@
 import os
+import asyncio
 import logging
 from typing import Union
 from asyncio import create_task
@@ -8,11 +9,21 @@ load_dotenv()
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+# Telethon utility # pip install telethon
+from telethon import TelegramClient, events
+from telethon.tl.custom import Button
+from pydantic import BaseModel
 
 # custom modules
 from routers.users import users
 from discord.discord_bot import bot
 from events.events import Emit
+
+#custom modules for telegram bot
+import app.telegram.handlers.client, app.telegram.handlers.help, app.telegram.handlers.game
+import app.telegram.handlers.register, app.telegram.handlers.login
+import app.telegram.handlers.render, app.telegram.handlers.market
+import app.telegram.handlers.market, app.telegram.handlers.clases
 
 app = FastAPI(
     title="Middleware Discord/Telegram",
@@ -139,3 +150,54 @@ async def start_bot():
     await bot.start(os.getenv("DISCORD_TOKEN"))
 
 create_task(start_bot())
+
+
+# Telegram Bot
+
+client = app.telegram.handlers.client.client
+
+# Define the /start command
+@client.on(events.NewMessage(pattern='/(?i)start')) 
+async def start(event):
+    sender = await event.get_sender()
+    SENDER = sender.id
+    text = "Welcome Farmer 🌾🐓🐷 \nAre you ready for your new adventure?"
+    await client.send_message(SENDER, text, parse_mode="HTML")
+    text = "If you need help just type /help to see the commands"
+    await client.send_message(SENDER, text, parse_mode="HTML")
+
+#Register
+client.add_event_handler(app.telegram.handlers.register.registerHandler)
+client.add_event_handler(app.telegram.handlers.register.nameHandler)
+client.add_event_handler(app.telegram.handlers.register.passHandler)
+
+#Login
+client.add_event_handler(app.telegram.handlers.login.loginHandler)
+client.add_event_handler(app.telegram.handlers.login.log_namehandler)
+
+#Help
+client.add_event_handler(app.telegram.handlers.help.helpHandler)
+client.add_event_handler(app.telegram.handlers.help.help_granjaHandler)
+client.add_event_handler(app.telegram.handlers.help.help_marketHandler)
+
+#Game
+client.add_event_handler(app.telegram.handlers.game.plantHandler)
+client.add_event_handler(app.telegram.handlers.game.waterHandler)
+client.add_event_handler(app.telegram.handlers.game.harvest)
+client.add_event_handler(app.telegram.handlers.game.accessHandler)
+
+#Render
+client.add_event_handler(app.telegram.handlers.render.renderHandler)
+
+#Market
+client.add_event_handler(app.telegram.handlers.market.marketsellHandler)
+client.add_event_handler(app.telegram.handlers.market.marketbuyHandler)
+
+loop = asyncio.get_event_loop()
+client.start()
+loop.run_forever()
+
+### MAIN
+if __name__ == '__main__':
+    print("Bot Started!")
+    client.run_until_disconnected()
