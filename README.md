@@ -1,3 +1,9 @@
+# Microservicio: Middleware Discord/Telegram
+
+Javier Jaure 202004544-5
+Danny Fuentes 201773559-7
+Bastian Varas 201856629-2
+
 # Ejecucion del programa
 
 Para ejecutar el demo, se debe ejecutar ```docker compose up``` lo cual iniciara la api en el puerto
