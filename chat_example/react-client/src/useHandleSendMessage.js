@@ -101,7 +101,7 @@ function useHandleSendMessage(message) {
       });
   } else {
     return new Promise((resolve, reject) => {
-      resolve('Metodo de no valido');
+      resolve('Metodo no valido');
     });
   }
 

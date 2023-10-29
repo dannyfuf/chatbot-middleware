@@ -23,10 +23,10 @@ form {
 }
 
 #root {
-  background-image: url('../public/granja.jpg');
-  background-size: cover; /* Ajustar al tamaño del contenedor */
-  background-position: center; /* Centrar la imagen */
-  background-repeat: no-repeat; /* Evitar la repetición de la imagen */
+  background-image: url('/granja.jpg');
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
   display: flex;
   height: 100%;
   
@@ -63,8 +63,8 @@ form {
 
 .chat-messages,
 .chat-reply {
-  background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente */
-  color: #000; /* Color de texto, en este caso, blanco */
+  background-color: rgba(255, 255, 255, 0.7); 
+  color: #000; 
   border: 2px solid #000;
   border-radius: 10px;
   padding: 8px;
