@@ -3,14 +3,14 @@ version: '3.9'
 services:
   middleware:
     container_name: middleware
-    build: .
+    build: ./middleware
     ports:
       - "5000:80"
     volumes:
-      - .:/code
+      - ./middleware:/app
   
   receiver:
-    build: .
+    build: ./middleware
     command: python3 events/events.py
 
   rabbitmq:
@@ -19,6 +19,25 @@ services:
         - 5672:5672
         - 15672:15672
 
+  redis:
+    image: redis:alpine
+
+  graphql:
+    container_name: graphql
+    build: ./graphql-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  chat:
+    container_name: chat
+    build: ./chat
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./chat:/app
+
 networks:
   default:
-    name: middleware
+    name: microsvcs
