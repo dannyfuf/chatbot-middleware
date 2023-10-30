@@ -22,8 +22,6 @@ function ChatScreen({ username }) {
     });
   });
 
-
-
   return (
     <form
       className="chat-screen"

@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from random import shuffle
 from hashlib import md5
+import logging
 
 from ariadne import (
     MutationType,
@@ -14,6 +15,10 @@ from ariadne.asgi import GraphQL
 from ariadne.asgi.handlers import GraphQLTransportWSHandler
 from broadcaster import Broadcast
 from starlette.applications import Starlette
+from starlette.middleware.cors import CORSMiddleware
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 
 COLORS = [
     "#dc2626",
@@ -40,13 +45,11 @@ shuffle(COLORS)
 def time_now():
     return datetime.now().isoformat()
 
-
 def str_to_color(src_str):
     str_hash = md5((src_str * 5).encode("utf-8")).hexdigest()
     hash_values = (str_hash[:8], str_hash[8:16], str_hash[16:24])
     color_index = sum(int(value, 16) % 256 for value in hash_values) % len(COLORS)
     return COLORS[color_index]
-
 
 pubsub = Broadcast("redis://redis:6379")
 
@@ -61,9 +64,7 @@ history = [
 
 type_defs = load_schema_from_path("schema.graphql")
 
-
 query = QueryType()
-
 
 @query.field("history")
 def resolve_history(*_):
@@ -71,22 +72,19 @@ def resolve_history(*_):
 
 mutation = MutationType()
 
-
 @mutation.field("reply")
 async def resolve_reply(*_, **message):
-    
     message["color"] = str_to_color(message["sender"])
     if message["sender"] == "Servidor":
         message["color"] = "#000000"
     message["timestamp"] = time_now()
     history.append(message)
+    logging.info(f"---------------------> reply: {history}")
     await pubsub.publish(channel="chatroom", message=json.dumps(message))
 
     return True
 
-
 subscription = SubscriptionType()
-
 
 @subscription.source("message")
 async def source_message(_, info):
@@ -98,8 +96,8 @@ async def source_message(_, info):
 
             yield message
 
-
 @subscription.field("message")
+
 def resolve_message(event, info):
     return event
 
@@ -116,5 +114,12 @@ app = Starlette(
     on_shutdown=[pubsub.disconnect],
 )
 
-app.mount("/graphql/", graphql)
-app.add_websocket_route("/graphql/", graphql)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/graphql", graphql)
+app.add_websocket_route("/graphql", graphql)
