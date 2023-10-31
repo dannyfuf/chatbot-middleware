@@ -2,6 +2,7 @@ import json
 import pika
 import logging
 import time
+import requests
 
 logging.getLogger("pika").setLevel(logging.ERROR)
 
@@ -28,7 +29,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='Rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -45,7 +46,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='Rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -62,7 +63,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='Rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -112,7 +113,7 @@ class Receive:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='Rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
                 
@@ -139,12 +140,29 @@ class Receive:
     def callback(self, ch, method, properties, body):
             try:
                 body = json.loads(body)
-                if 'id_user' in body:
-                    user_id = body['id_user']
-                    logging.info(f"Anuncio Recivido para el usuario {user_id}")
+                if 'anuncio' in body:
+                    anuncio = body['anuncio']
+                    logging.info(f"Anuncio Recivido {anuncio}")
                     ch.basic_ack(delivery_tag=method.delivery_tag)
+                    
+                url = 'http://localhost:5001/users'  # API de usuarios
+
+                try:
+                    
+                    response = requests.get(url)
+
+                   
+                    if response.status_code == 200:
+                        
+                        data = response.json() 
+                        
+                    else:
+                        print(f'Error en la solicitud GET. Código de estado: {response.status_code}')
+                except requests.exceptions.RequestException as e:
+                    
+                    print(f'Error en la solicitud GET: {e}')
                 else:
-                    logging.error("El mensaje JSON no contiene el campo 'id_user'")
+                    logging.error("El mensaje JSON no contiene el campo 'anuncio'")
             except json.JSONDecodeError as e:
                 logging.error(f"Error al decodificar JSON: {str(e)}")
 

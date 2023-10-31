@@ -35,7 +35,12 @@ form {
 }
 
 .login-form {
-  max-width: 200px;
+  background-color: rgba(255, 255, 255, 0.7); 
+  color: #000; 
+  border: 2px solid #000;
+  border-radius: 10px;
+
+  padding: 25px;
 }
 
 .login-form label {
