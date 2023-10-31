@@ -23,3 +23,4 @@ La aplicacion escucha los eventos enviados por el microservicio de anuncios por 
 el puerto localhost:5001 para recibir todos los usuarios y elegir uno al alazar al cual se le enviara el anuncio.
 
 # Video de las funcionalidades
+https://youtu.be/2HZlFUfI47M
