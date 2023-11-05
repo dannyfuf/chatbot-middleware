@@ -11,8 +11,29 @@ type Message {
 
 type Mutation {
   reply(sender: String!, message: String!): Boolean!
+  createUser(
+    id: ID!,
+    name: String!,
+    username: String!,
+    password: String!,
+    email: String!,
+    admin: Boolean!,
+    phone_number: Int!,
+    ad: String!
+  ): User!
 }
 
 type Subscription {
   message: Message
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  password: String!
+  email: String!
+  admin: Boolean!
+  phone_number: Int!
+  ad: String!
 }

@@ -3,6 +3,7 @@ from datetime import datetime
 from random import shuffle
 from hashlib import md5
 import logging
+import httpx
 
 from ariadne import (
     MutationType,
@@ -69,10 +70,53 @@ async def resolve_reply(*_, **message):
         message["color"] = "#000000"
     message["timestamp"] = time_now()
     history.append(message)
-    logging.info(f"---------------------> reply: {history}")
     await pubsub.publish(channel="chatroom", message=json.dumps(message))
 
     return True
+
+@mutation.field("createUser")
+async def resolve_create_user(*_, **user):
+    async with httpx.AsyncClient() as client:
+        try:
+            url = 'http://tarea_u4_api_gateway:80/'
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            query = '''
+                mutation($id: ID!, $name: String!, $username: String!, $password: String!, $email: String!, $admin: Boolean!, $phone_number: Int!, $ad: String!) {
+                    createUser(
+                        id: $id,
+                        name: $name,
+                        username: $username,
+                        password: $password,
+                        email: $email,
+                        admin: $admin,
+                        phone_number: $phone_number,
+                        ad: $ad,
+                    ) {
+                        name
+                        username
+                    }
+                }
+            '''
+            data = {
+                'query': query,
+                'variables': user
+            }
+
+            response = await client.post(url, headers=headers, json=data)
+            response.raise_for_status()
+            response_data = response.json()
+            logging.info(f"response createUser: {response_data}")
+            return user
+        
+        except httpx.HTTPStatusError as e:
+            logging.error(f"An error occurred: {e}")
+            return None
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+            return None
 
 subscription = SubscriptionType()
 

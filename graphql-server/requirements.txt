@@ -1,4 +1,5 @@
-  ariadne==0.16
-  uvicorn==0.23.2
-  websockets==12.0
-  broadcaster[redis]
+ariadne==0.16
+uvicorn==0.23.2
+websockets==12.0
+broadcaster[redis]
+httpx
