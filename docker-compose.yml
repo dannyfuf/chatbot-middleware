@@ -35,6 +35,13 @@ services:
     depends_on:
       - redis
 
+  chat:
+    container_name: chat
+    build: ./chat
+    ports:
+      - "8002:5173"
+    volumes:
+      - ./chat:/app
 
 networks:
   default:
