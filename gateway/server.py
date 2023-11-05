@@ -61,6 +61,45 @@ query = QueryType()
 def resolve_history(*_):
     return history[-10:] 
 
+@query.field("login")
+async def resolve_login(*_, **user):
+    async with httpx.AsyncClient() as client:
+        try:
+            url = 'http://tarea_u4_api_gateway:80/'
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            query = '''
+                query {
+                    listUsers {
+                        id
+                        username
+                    }
+                }
+            '''
+            data = {
+                'query': query
+            }
+            response = await client.post(url, headers=headers, json=data)
+            response.raise_for_status()
+            response_data = response.json()
+            users = response_data["data"]["listUsers"]
+            usernames = [u["username"] for u in users]
+            if user["username"] not in usernames:
+                logging.info("login: false")
+                return False
+
+            logging.info("login: true")
+            return True
+        
+        except httpx.HTTPStatusError as e:
+            logging.error(f"An error occurred: {e}")
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+    logging.info("login: false")
+    return False
+
 mutation = MutationType()
 
 @mutation.field("reply")
