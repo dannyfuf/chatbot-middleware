@@ -1,5 +1,6 @@
 type Query {
   history: [Message!]!
+  login(username: String!): Boolean!
 }
 
 type Message {
