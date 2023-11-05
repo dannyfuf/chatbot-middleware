@@ -1,9 +1,9 @@
-import * as React from "react";
+import { useState } from "react";
 import ChatScreen from "./ChatScreen";
 import LoginScreen from "./LoginScreen";
 
 function App() {
-  const [username, setUsername] = React.useState("");
+  const [username, setUsername] = useState("");
 
   return (
     <>

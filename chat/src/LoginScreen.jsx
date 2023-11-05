@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
-import useCreateUserMutation from "./useCreateUserMutation";
+import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import Notification from "./notification";
+import { SpinnerCircular } from 'spinners-react';
+
+import useCreateUserMutation from "./useCreateUserMutation";
+import useLoginQuery from "./useLoginQuery";
 
 function LoginScreen({ setUsername }) {
   const [value, setValue] = useState("");
@@ -9,8 +12,10 @@ function LoginScreen({ setUsername }) {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("success");
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const [createUser] = useCreateUserMutation();
+  const [loginUser] = useLoginQuery();
 
   const [createUserData, setCreateUserData] = useState({
     name: "",
@@ -24,15 +29,7 @@ function LoginScreen({ setUsername }) {
     return (
       <form
         className="login-form"
-        onSubmit={(ev) => {
-          const username = value.trim();
-          if (username.length > 0) {
-            setUsername(username);
-          }
-
-          ev.preventDefault();
-          return false;
-        }}
+        onSubmit={handleLogin}
       >
         <label htmlFor="username">Usuario:</label>
         <input
@@ -40,9 +37,62 @@ function LoginScreen({ setUsername }) {
           value={value}
           onChange={(ev) => setValue(ev.target.value)}
         />
-        <button type="submit">Entrar</button>
+        <button type="submit">{showSpinner ? <SpinnerCircular /> : "Entrar"}</button>
       </form>
     )
+  }
+
+  const handleLogin = (ev) => {
+    ev.preventDefault();
+
+    const username = value.trim();
+    if (username.length > 0) {
+      setShowSpinner(true);
+      loginUser({
+        variables: {
+          username
+        }
+      })
+        .then((resp) => {
+          const { login: loginResult } = resp.data;
+          if (loginResult) {
+            setShowNotification(true);
+            setNotificationMessage("Sesión iniciada");
+            setNotificationType("success");
+            setTimeout(() => {
+              setShowNotification(false);
+            }, 2000);
+            setUsername(username);
+            return;
+          }
+
+          setShowNotification(true);
+          setNotificationMessage("Usuario no encontrado");
+          setNotificationType("error");
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 2000);
+          setShowSpinner(false);
+        })
+        .catch((err) => {
+          setShowNotification(true);
+          setNotificationMessage("Error al iniciar sesión");
+          setNotificationType("error");
+          setTimeout(() => {
+            setShowNotification(false);
+            setShowSpinner(false);
+          }, 2000);
+        })
+      return;
+    }
+
+    setShowNotification(true);
+    setNotificationMessage("Debes ingresar un nombre de usuario");
+    setNotificationType("error");
+    setTimeout(() => {
+      setShowNotification(false);
+      setShowSpinner(false);
+    }, 2000);
   }
 
   const Signup = () => {
