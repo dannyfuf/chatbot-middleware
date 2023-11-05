@@ -98,6 +98,7 @@ function LoginScreen({ setUsername }) {
   const Signup = () => {
     return (
       <form
+        className="login-form"
         style={{display: "flex", flexDirection: "column", alignItems: "center"}}
         onSubmit={handleSignup}
       >
@@ -140,7 +141,7 @@ function LoginScreen({ setUsername }) {
           onChange={(ev) => setCreateUserData({ ...createUserData, phoneNumber: ev.target.value })}
           style={{marginBottom: "1rem"}}
         />
-        <button type="submit">Crear</button>
+        <button type="submit">{showSpinner ? <SpinnerCircular /> : "Crear" }</button>
       </form>
     )
   }
@@ -148,6 +149,7 @@ function LoginScreen({ setUsername }) {
   const handleSignup = (ev) => {
     ev.preventDefault();
 
+    setShowSpinner(true);
     createUser({
       variables: {
         id: uuid(),
@@ -169,6 +171,7 @@ function LoginScreen({ setUsername }) {
           setShowNotification(false);
         }, 3000);
         console.log(resp);
+        setShowSpinner(false);
       })
       .catch((err) => {
         setShowNotification(true);
@@ -178,6 +181,7 @@ function LoginScreen({ setUsername }) {
           setShowNotification(false);
         }, 3000);
         console.log(err);
+        setShowSpinner(false);
       })
   }
 
