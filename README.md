@@ -22,5 +22,10 @@ La aplicacion escucha los eventos enviados por el microservicio de anuncios por 
 'anuncios' con un routing_key 'anuncio.send.*', al recibir un anuncio se comunica con la API de Usuarios en
 el puerto localhost:5001 para recibir todos los usuarios y elegir uno al alazar al cual se le enviara el anuncio.
 
+# Test servicios
+
+Se agrego en middleware/test_main.py un testeo de los servicios creando dos pruebas por cada end-point, una 
+prueba positiva donde se recibe codigo 200 con un json de respuesta igual al json enviado en el body, y una prueba negativa con codigo 422, donde falta algun parametro o algun parametro no es del tipo pedido, devolviendo un json con el error por defecto de FastAPI. Ademas, se modifico el codigo middleware/main.py para agregar una condicion de si se recibe una peticion con id "test_main_event" simule el envio de eventos a la cola rabbit sin realizarlo realmente.
+
 # Video de las funcionalidades
 https://youtu.be/2HZlFUfI47M
