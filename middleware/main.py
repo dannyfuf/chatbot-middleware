@@ -78,8 +78,11 @@ def render_create(render: Render):
         user_id= render.user_id,
         auth_token=render.auth_token
     )
+    
+    if render.user_id != "test_main_event":
+        emit_events.send_render(render.user_id, "render", render_user.model_dump())
+
     logging.info(f"Render creado para el usuario:{render.user_id}")
-    emit_events.send_render(render.user_id, "render", render_user.model_dump())
 
     return render_user
 
@@ -108,8 +111,11 @@ def render_create(marketplace: MarketPlace):
         action_item= marketplace.action_item,
         action_amount= marketplace.action_amount
     )
+    if marketplace.action_item != "test_main_event":
+        emit_events.send_marketplace(marketplace.action, marketplace.action_item, marketplace.action_amount, marketplace_action.model_dump())
+
+
     logging.info(f"Accion realizada: Se {marketplace.action} {marketplace.action_amount} {marketplace.action_item}")
-    emit_events.send_marketplace(marketplace.action, marketplace.action_item, marketplace.action_amount, marketplace_action.model_dump())
 
     return marketplace_action
 
@@ -138,12 +144,14 @@ def render_create(farm: Farm):
         action_item= farm.action_item,
         action_amount= farm.action_amount
     )
+    if farm.action_item != "test_main_event":
+        emit_events.send_farm(farm.action, farm.action_item, farm.action_amount, farm.model_dump())
+
     logging.info(f"Accion realizada: Se {farm.action} {farm.action_amount} {farm.action_item}")
-    emit_events.send_farm(farm.action, farm.action_item, farm.action_amount, farm.model_dump())
 
     return farm_action
 
 async def start_bot():
-    await bot.start(os.getenv("DISCORD_TOKEN"))
+     await bot.start(os.getenv("DISCORD_TOKEN"))
 
 create_task(start_bot())
