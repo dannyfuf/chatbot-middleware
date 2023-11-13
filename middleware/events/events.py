@@ -29,7 +29,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='Rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -46,7 +46,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='Rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -63,7 +63,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='Rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -113,7 +113,7 @@ class Receive:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='Rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq')
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
                 
