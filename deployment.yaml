@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: middleware
+  template:
+    metadata:
+      labels:
+        app: middleware
+    spec:
+      containers:
+      - name: middleware
+        image: dannyfuf/middleware
+        ports:
+        - containerPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-receiver
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: middleware-receiver
+  template:
+    metadata:
+      labels:
+        app: middleware-receiver
+    spec:
+      containers:
+      - name: receiver
+        image: dannyfuf/receiver
+        command: ["python3", "events/events.py"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: dannyfuf/gateway
+        ports:
+        - containerPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management-alpine
+        ports:
+        - containerPort: 5673
+        - containerPort: 15673
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat
+  namespace: microservices
+spec:
+  selector:
+    matchLabels:
+      app: chat
+  template:
+    metadata:
+      labels:
+        app: chat
+    spec:
+      containers:
+      - name: chat
+        image: dannyfuf/chat
+        ports:
+        - containerPort: 8002
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress-middleware
+  namespace: microservices
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+spec:
+  tls:
+  - hosts:
+    - middleware.inf326.nursoft.dev
+    secretName: letsencrypt
+  rules:
+    - host: middleware.inf326.nursoft.dev
+      http: &demo_rules
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  chat
+                port:
+                  number: 8002
