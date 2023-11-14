@@ -29,7 +29,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq-service', port=5672)
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -46,7 +46,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq-service', port=5672)
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -63,7 +63,7 @@ class Emit:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq-service', port=5672)
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
 
@@ -113,7 +113,7 @@ class Receive:
         while True:
             try:
                 self.connection = pika.BlockingConnection(
-                    pika.ConnectionParameters(host='rabbitmq')
+                    pika.ConnectionParameters(host='rabbitmq-service', port=5672)
                 )
                 logging.info('Conexion a Rabbitmq realizada correctamente')
                 
@@ -145,7 +145,7 @@ class Receive:
                     logging.info(f"Anuncio Recivido {anuncio}")
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                     
-                url = 'http://localhost:5001/users'  # API de usuarios
+                url = 'http://tarea_u4_service_users:80/users'  # API de usuarios
 
                 try:
                     
