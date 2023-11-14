@@ -6,7 +6,7 @@ function useHandleSendMessage(message) {
   const msj = message.split(' ')
   
   let endpoint = msj[0]
-  let url = 'http://localhost:8001/' + endpoint
+  let url = 'http://middleware-service/' + endpoint
   if (endpoint === 'marketplace') {
     if (msj.length !== 3) {
       return new Promise((resolve, reject) => {

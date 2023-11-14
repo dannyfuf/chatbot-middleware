@@ -14,12 +14,12 @@ import "./index.css";
 import App from "./App";
 
 const httpLink = new HttpLink({
-  uri: `http://localhost:8000/graphql/`,
+  uri: `https://middleware.demo.inf326.nursoft.dev/graphql/`,
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `ws://localhost:8000/graphql/`,
+    url: `wss://middleware.demo.inf326.nursoft.dev/graphql/`,
   })
 );
 

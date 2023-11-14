@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/graphql/": {
-        target: "http://localhost:8000",
+        target: "https://middleware.demo.inf326.nursoft.dev",
         changeOrigin: true,
         ws: true,
       },
