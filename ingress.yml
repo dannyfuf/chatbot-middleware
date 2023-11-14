@@ -1,0 +1,17 @@
+- host: middleware.demo.inf326.nursoft.dev
+  http:
+    paths:
+    - backend:
+        service:
+          name: chat-service
+          port:
+            number: 8002
+      path: /
+      pathType: Prefix
+    - backend:
+        service:
+          name: gateway-service
+          port:
+            number: 8000
+      path: /gateway
+      pathType: Prefix
