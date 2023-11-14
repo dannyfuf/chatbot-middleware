@@ -42,7 +42,7 @@ def str_to_color(src_str):
     color_index = sum(int(value, 16) % 256 for value in hash_values) % len(COLORS)
     return COLORS[color_index]
 
-pubsub = Broadcast("redis://redis:6379")
+pubsub = Broadcast("redis://redis-service:6379")
 
 history = [
     {
@@ -65,7 +65,7 @@ def resolve_history(*_):
 async def resolve_login(*_, **user):
     async with httpx.AsyncClient() as client:
         try:
-            url = 'http://tarea_u4_api_gateway:80/'
+            url = 'http://tarea-u4-service-users/'
             headers = {
                 'Content-Type': 'application/json'
             }
@@ -117,7 +117,7 @@ async def resolve_reply(*_, **message):
 async def resolve_create_user(*_, **user):
     async with httpx.AsyncClient() as client:
         try:
-            url = 'http://tarea_u4_api_gateway:80/'
+            url = 'http://tarea-u4-service-users/'
             headers = {
                 'Content-Type': 'application/json'
             }
